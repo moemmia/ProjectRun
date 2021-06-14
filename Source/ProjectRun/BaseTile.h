@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
+#include "Math/UnrealMathUtility.h"
+#include "Engine/EngineTypes.h"
 #include "BaseTile.generated.h"
 
 UCLASS()
@@ -17,7 +19,10 @@ public:
 		USceneComponent* Base;
 
 	UPROPERTY(EditDefaultsOnly)
-		TArray<FVector> SpawnPoints;
+		TArray<FTransform> SpawnPoints;
+
+	UPROPERTY(EditAnywhere)
+		UClass* SpawnClass;
 
 	UPROPERTY(EditAnywhere)
 		float Damage = 25.0f;
@@ -28,6 +33,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void Destroyed() override;
 
 public:	
 	// Called every frame
@@ -47,4 +54,7 @@ private:
 
 	UPROPERTY()
 		TArray<AActor*> DamagedActors;
+
+	UPROPERTY()
+		AActor* Spawned;
 };

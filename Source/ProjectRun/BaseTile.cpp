@@ -29,6 +29,26 @@ void ABaseTile::BeginPlay()
             Collision->OnComponentBeginOverlap.AddDynamic(this, &ABaseTile::BeginOverlap);
     }
     
+    if (SpawnClass && FMath::RandRange(0, 1) > 0 && SpawnPoints.Num() > 0) {
+        float id = FMath::RandRange(0, SpawnPoints.Num() - 1);
+        FTransform transform = SpawnPoints[id];
+
+        Spawned = GetWorld()->SpawnActor<AActor>(SpawnClass);
+        if (Spawned) {
+            Spawned->AttachToComponent(Base, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
+            Spawned->SetActorRelativeLocation(transform.GetLocation());
+            Spawned->SetActorRotation(transform.GetRotation());
+        }
+    }
+}
+
+void ABaseTile::Destroyed()
+{
+    if (Spawned) {
+        Spawned->K2_DestroyActor();
+        Spawned = NULL;
+    }
+    Super::Destroyed();
 }
 
 // Called every frame
